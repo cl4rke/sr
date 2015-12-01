@@ -9,10 +9,7 @@ import javax.swing.text.Document;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -65,7 +62,7 @@ public class SR extends JFrame {
 
 
         this.setSize(1000, 600);
-       this.setLayout(new BorderLayout());
+        this.setLayout(new BorderLayout());
 
 
 
@@ -120,7 +117,7 @@ public class SR extends JFrame {
 
                 if (txt.contains(txt2)) {
 
-                  textArea.setText(txt.replaceAll("(?i)" + txt2, txt3));
+                    textArea.setText(txt.replaceAll("(?i)" + txt2, txt3));
 
                 }
 
@@ -182,9 +179,9 @@ public class SR extends JFrame {
                         topicSentiment[si] = topicSentiment[si].trim();
                         topicsents.add(topicSentiment[si]);
 
-                       for (int index = 0; index < topicsents.size(); index++) {
-                          //  textArea.append(topicsents.get(index)+"\n");
-                         System.out.print(topicsents+"\n");
+                        for (int index = 0; index < topicsents.size(); index++) {
+                            //  textArea.append(topicsents.get(index)+"\n");
+                            System.out.print(topicsents+"\n");
 
 
                         }
@@ -195,7 +192,6 @@ public class SR extends JFrame {
 /*
                     while (cellIterator.hasNext()) {
                         Cell cell = cellIterator.next();
-
                         switch (cell.getCellType()) {
                             case Cell.CELL_TYPE_STRING:
                                 System.out.print(cell.getStringCellValue());
@@ -221,11 +217,69 @@ public class SR extends JFrame {
                     e1.printStackTrace();
                 }
 
+
+
             }
 
 
         });
+        save.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                String excelFilePath = "Workbook 26 - 50.xlsx";
+                FileInputStream inputStream = null;
+                try {
+                    inputStream = new FileInputStream(new File(excelFilePath));
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+
+                Workbook workbook = null;
+                try {
+                    workbook = new XSSFWorkbook(inputStream);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                Sheet sheet = workbook.getSheetAt(0);
+
+
+                Iterator<Row> iterator = sheet.iterator();
+                Row row = sheet.getRow(0);
+                while (iterator.hasNext()) {
+                    Row nextRow = iterator.next();
+
+                    Iterator<Cell> cellIterator = nextRow.cellIterator();
+                    Iterator<Cell> scellIterator = nextRow.cellIterator();
+
+                    cellIterator.next();
+                    scellIterator.next();
+                    scellIterator.next();
+                    Cell topicsCell = cellIterator.next();
+                    Cell topicSentimentCell =scellIterator.next();
+
+                    String cellContents = topicsCell.getStringCellValue();
+                    String scellContents = topicSentimentCell.getStringCellValue();
+
+                    String[] topics = cellContents.split(";");
+                    String[] topicSentiment = scellContents.split(";");
+
+
+                    for(int i = 0; i < topics.length; i++) {
+                       Cell cell = row.getCell(i);
+                        cell.setCellValue(textArea.getText());
+                    }
+
+
+
+                }
+
+                try {
+                    workbook.write(new FileOutputStream("Workbook 26 - 50.xlsx"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        });
     }
 }
-
-
