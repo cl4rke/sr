@@ -192,30 +192,21 @@ public class SR extends JFrame {
                     int numberOfSheets = workbook.getNumberOfSheets();
 
                     for (int i = 0; i < numberOfSheets; i++) {
-
                         Sheet sheet = workbook.getSheetAt(i);
 
-                        Iterator<Row> iterator = sheet.iterator();
-                        Row row = sheet.getRow(0);
-
-                        while (iterator.hasNext()) {
-                            Row nextRow = iterator.next();
-
-                            Iterator<Cell> cellIterator = nextRow.cellIterator();
-                            Iterator<Cell> scellIterator = nextRow.cellIterator();
+                        for (Row row : sheet) {
+                            Iterator<Cell> cellIterator = row.cellIterator();
 
                             cellIterator.next();
-                            scellIterator.next();
-                            scellIterator.next();
-                            Cell topicsCell = cellIterator.next();
-                            Cell topicSentimentCell = scellIterator.next();
 
-                            String cellContents = topicsCell.getStringCellValue();
-                            String scellContents = topicSentimentCell.getStringCellValue();
+                            Cell topicCell = cellIterator.next();
+                            Cell sentimentCell = cellIterator.next();
 
-                            String[] topics = cellContents.split(";");
-                            String[] topicSentiment = scellContents.split(";");
+                            String topicCellContents = topicCell.getStringCellValue();
+                            String sentimentCellContents = sentimentCell.getStringCellValue();
 
+                            String[] topics = topicCellContents.split(";");
+                            String[] sentiments = sentimentCellContents.split(";");
 
                             for (int in = 0; in < topics.length; in++) {
                                 Cell cell = row.getCell(in);
@@ -223,9 +214,7 @@ public class SR extends JFrame {
                                     cell.setCellValue(textArea.getText());
                                 }
                             }
-
                         }
-
                     }
                     workbook.write(new FileOutputStream("Workbook26-50.xlsx"));
                 } catch (IOException e1) {
