@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SR extends JFrame {
@@ -18,7 +17,8 @@ public class SR extends JFrame {
     JButton importfile, save, find, replacebutton;
     JScrollPane scroll;
     int pos = 0;
-
+    StringSet uniqueTopics = new StringSet();
+    StringSet uniqueSentiments = new StringSet();
 
     public static void main(String arg[]) {
         SR ti = new SR();
@@ -69,6 +69,8 @@ public class SR extends JFrame {
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
+
+        textArea.setFont(new Font("Consolas", Font.PLAIN, 16));
 
 
         find.addActionListener(new ActionListener() {
@@ -128,17 +130,46 @@ public class SR extends JFrame {
         importfile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String excelFilePath = "Workbook26-50.xlsx";
-                FileInputStream inputStream = null;
                 try {
-                    inputStream = new FileInputStream(new File(excelFilePath));
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
+                    String excelFilePath = "Workbook26-50.xlsx";
+                    FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
 
-                Workbook workbook = null;
-                try {
-                    workbook = new XSSFWorkbook(inputStream);
+                    Workbook workbook = new XSSFWorkbook(inputStream);
+
+                    int numberOfSheets = workbook.getNumberOfSheets();
+
+                    for (int i = 0; i < numberOfSheets; i++) {
+                        Sheet sheet = workbook.getSheetAt(i);
+
+                        for (Row row : sheet) {
+                            Iterator<Cell> cellIterator = row.cellIterator();
+
+                            cellIterator.next();
+
+                            String topicCellContents = cellIterator.next().getStringCellValue();
+                            String sentimentCellContents = cellIterator.next().getStringCellValue();
+
+                            String[] topics = topicCellContents.split(";");
+                            String[] sentiments = sentimentCellContents.split(";");
+
+                            for (String topic : topics) {
+                                uniqueTopics.add(topic.trim().toLowerCase());
+                            }
+
+                            for (String sentiment : sentiments) {
+                                uniqueSentiments.add(sentiment.trim().toLowerCase());
+                            }
+                        }
+                    }
+
+                    for (StringCount topic : uniqueTopics) {
+                        textArea.append(topic + "\n");
+                    }
+
+                    for (StringCount sentiment : uniqueSentiments) {
+                        textArea.append(sentiment + "\n");
+                    }
+
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -146,86 +177,6 @@ public class SR extends JFrame {
                /* String gettxt = text2.getText();
                 int sheetpage = Integer.parseInt(gettxt);*/
                 //  Sheet firstSheet = workbook.getSheetAt(0);
-                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                    Sheet firstSheet = workbook.getSheetAt(i);
-
-
-                    Iterator<Row> iterator = firstSheet.iterator();
-
-                    while (iterator.hasNext()) {
-                        Row nextRow = iterator.next();
-
-                        Iterator<Cell> cellIterator = nextRow.cellIterator();
-                        Iterator<Cell> scellIterator = nextRow.cellIterator();
-
-                        cellIterator.next();
-                        scellIterator.next();
-                        scellIterator.next();
-                        Cell topicsCell = cellIterator.next();
-                        Cell topicSentimentCell = scellIterator.next();
-
-                        String cellContents = topicsCell.getStringCellValue();
-                        String scellContents = topicSentimentCell.getStringCellValue();
-
-                        String[] topics = cellContents.split(";");
-                        String[] topicSentiment = scellContents.split(";");
-
-                        ArrayList<String> tpc = new ArrayList<>();
-                        ArrayList<String> topicsents = new ArrayList<>();
-                        for (int in = 0; in < topics.length; in++) {
-                            topics[in] = topics[in].trim();
-                            tpc.add(topics[in]);
-
-                            for (int indx = 0; indx < tpc.size(); indx++) {
-                                textArea.append(tpc.get(indx) + "\n");
-                            }
-
-                        }
-
-                        for (int si = 0; si < topicSentiment.length; si++) {
-                            topicSentiment[si] = topicSentiment[si].trim();
-                            topicsents.add(topicSentiment[si]);
-
-                            for (int index = 0; index < topicsents.size(); index++) {
-                                //  textArea.append(topicsents.get(index)+"\n");
-                                System.out.print(topicsents + "\n");
-
-
-                            }
-
-                        }
-
-
-/*
-                    while (cellIterator.hasNext()) {
-                        Cell cell = cellIterator.next();
-                        switch (cell.getCellType()) {
-                            case Cell.CELL_TYPE_STRING:
-                                System.out.print(cell.getStringCellValue());
-                                break;
-                            case Cell.CELL_TYPE_BOOLEAN:
-                                System.out.print(cell.getBooleanCellValue());
-                                break;
-                            case Cell.CELL_TYPE_NUMERIC:
-                                System.out.print(cell.getNumericCellValue());
-                                break;
-                        }
-                       System.out.print(" - ");
-                    }
-                    System.out.println();
-*/
-
-                    }
-
-
-                    try {
-                        inputStream.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-
-                }
             }
 
         });
