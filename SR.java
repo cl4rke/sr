@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SR extends JFrame {
-    JTextArea textArea, search, replace;
+    JTextArea textArea, search, replace,text2;
     JButton importfile, save, find, replacebutton;
     JScrollPane scroll;
     int pos = 0;
@@ -29,6 +29,7 @@ public class SR extends JFrame {
     public SR() {
 
         textArea = new JTextArea(900,300);
+        text2 = new JTextArea("0",40,40);
         search = new JTextArea("Search");
         importfile = new JButton("Import");
         save = new JButton("Save");
@@ -43,6 +44,7 @@ public class SR extends JFrame {
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         scroll.setSize(100,100);
         this.add(search);
+      //  this.add(text2);
         this.add(importfile);
         this.add(save);
         this.add(scroll);
@@ -59,6 +61,7 @@ public class SR extends JFrame {
         scroll.setBounds(20, 150, 900, 300);
         replacebutton.setBounds(500, 50, 100, 40);
         replace.setBounds(600, 50, 150, 40);
+        text2.setBounds(10,100,20,20);
 
 
         this.setSize(1000, 600);
@@ -115,11 +118,15 @@ public class SR extends JFrame {
                 String txt2 = search.getText();
                 String txt3 = replace.getText();
 
+
+
                 if (txt.contains(txt2)) {
 
                     textArea.setText(txt.replaceAll("(?i)" + txt2, txt3));
 
                 }
+
+
 
             }
         });
@@ -141,52 +148,58 @@ public class SR extends JFrame {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                Sheet firstSheet = workbook.getSheetAt(0);
 
-                Iterator<Row> iterator = firstSheet.iterator();
+               /* String gettxt = text2.getText();
+                int sheetpage = Integer.parseInt(gettxt);*/
+                //  Sheet firstSheet = workbook.getSheetAt(0);
+                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                    Sheet firstSheet = workbook.getSheetAt(i);
 
-                while (iterator.hasNext()) {
-                    Row nextRow = iterator.next();
 
-                    Iterator<Cell> cellIterator = nextRow.cellIterator();
-                    Iterator<Cell> scellIterator = nextRow.cellIterator();
+                    Iterator<Row> iterator = firstSheet.iterator();
 
-                    cellIterator.next();
-                    scellIterator.next();
-                    scellIterator.next();
-                    Cell topicsCell = cellIterator.next();
-                    Cell topicSentimentCell =scellIterator.next();
+                    while (iterator.hasNext()) {
+                        Row nextRow = iterator.next();
 
-                    String cellContents = topicsCell.getStringCellValue();
-                    String scellContents = topicSentimentCell.getStringCellValue();
+                        Iterator<Cell> cellIterator = nextRow.cellIterator();
+                        Iterator<Cell> scellIterator = nextRow.cellIterator();
 
-                    String[] topics = cellContents.split(";");
-                    String[] topicSentiment = scellContents.split(";");
+                        cellIterator.next();
+                        scellIterator.next();
+                        scellIterator.next();
+                        Cell topicsCell = cellIterator.next();
+                        Cell topicSentimentCell = scellIterator.next();
 
-                    ArrayList<String> tpc = new ArrayList<>();
-                    ArrayList<String> topicsents = new ArrayList<>();
-                    for(int i = 0; i < topics.length; i++) {
-                        topics[i] = topics[i].trim();
-                        tpc.add(topics[i]);
+                        String cellContents = topicsCell.getStringCellValue();
+                        String scellContents = topicSentimentCell.getStringCellValue();
 
-                        for (int indx = 0; indx < tpc.size(); indx++) {
-                            textArea.append(tpc.get(indx)+"\n");
-                        }
+                        String[] topics = cellContents.split(";");
+                        String[] topicSentiment = scellContents.split(";");
 
-                    }
+                        ArrayList<String> tpc = new ArrayList<>();
+                        ArrayList<String> topicsents = new ArrayList<>();
+                        for (int in = 0; in < topics.length; in++) {
+                            topics[in] = topics[in].trim();
+                            tpc.add(topics[in]);
 
-                    for(int si = 0; si < topicSentiment.length; si++) {
-                        topicSentiment[si] = topicSentiment[si].trim();
-                        topicsents.add(topicSentiment[si]);
-
-                        for (int index = 0; index < topicsents.size(); index++) {
-                            //  textArea.append(topicsents.get(index)+"\n");
-                            System.out.print(topicsents+"\n");
-
+                            for (int indx = 0; indx < tpc.size(); indx++) {
+                                textArea.append(tpc.get(indx) + "\n");
+                            }
 
                         }
 
-                    }
+                        for (int si = 0; si < topicSentiment.length; si++) {
+                            topicSentiment[si] = topicSentiment[si].trim();
+                            topicsents.add(topicSentiment[si]);
+
+                            for (int index = 0; index < topicsents.size(); index++) {
+                                //  textArea.append(topicsents.get(index)+"\n");
+                                System.out.print(topicsents + "\n");
+
+
+                            }
+
+                        }
 
 
 /*
@@ -208,19 +221,18 @@ public class SR extends JFrame {
                     System.out.println();
 */
 
+                    }
+
+
+                    try {
+                        inputStream.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+
+
                 }
-
-
-                try {
-                    inputStream.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-
-
-
             }
-
 
         });
         save.addActionListener(new ActionListener() {
@@ -240,46 +252,52 @@ public class SR extends JFrame {
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                Sheet sheet = workbook.getSheetAt(0);
 
 
-                Iterator<Row> iterator = sheet.iterator();
-                Row row = sheet.getRow(0);
-                while (iterator.hasNext()) {
-                    Row nextRow = iterator.next();
+                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                    Sheet sheet = workbook.getSheetAt(i);
 
-                    Iterator<Cell> cellIterator = nextRow.cellIterator();
-                    Iterator<Cell> scellIterator = nextRow.cellIterator();
+                    Iterator<Row> iterator = sheet.iterator();
+                    Row row = sheet.getRow(0);
 
-                    cellIterator.next();
-                    scellIterator.next();
-                    scellIterator.next();
-                    Cell topicsCell = cellIterator.next();
-                    Cell topicSentimentCell =scellIterator.next();
+                    while (iterator.hasNext()) {
+                        Row nextRow = iterator.next();
 
-                    String cellContents = topicsCell.getStringCellValue();
-                    String scellContents = topicSentimentCell.getStringCellValue();
+                        Iterator<Cell> cellIterator = nextRow.cellIterator();
+                        Iterator<Cell> scellIterator = nextRow.cellIterator();
 
-                    String[] topics = cellContents.split(";");
-                    String[] topicSentiment = scellContents.split(";");
+                        cellIterator.next();
+                        scellIterator.next();
+                        scellIterator.next();
+                        Cell topicsCell = cellIterator.next();
+                        Cell topicSentimentCell = scellIterator.next();
+
+                        String cellContents = topicsCell.getStringCellValue();
+                        String scellContents = topicSentimentCell.getStringCellValue();
+
+                        String[] topics = cellContents.split(";");
+                        String[] topicSentiment = scellContents.split(";");
 
 
-                    for(int i = 0; i < topics.length; i++) {
-                       Cell cell = row.getCell(i);
-                        cell.setCellValue(textArea.getText());
+                        for (int in = 0; in < topics.length; in++) {
+                            Cell cell = row.getCell(in);
+                            if (cell != null) {
+                                cell.setCellValue(textArea.getText());
+                            }
+                        }
+
+                    }
+
+                }
+                    try {
+                        workbook.write(new FileOutputStream("Workbook 26 - 50.xlsx"));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
                     }
 
 
-
                 }
 
-                try {
-                    workbook.write(new FileOutputStream("Workbook 26 - 50.xlsx"));
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-
-            }
         });
     }
 }
