@@ -14,22 +14,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SR extends JFrame {
-    JTextArea textArea, search, replace,text2;
+    JTextArea textArea, search, replace, text2;
     JButton importfile, save, find, replacebutton;
     JScrollPane scroll;
     int pos = 0;
 
 
     public static void main(String arg[]) {
-
         SR ti = new SR();
     }
 
 
     public SR() {
 
-        textArea = new JTextArea(900,300);
-        text2 = new JTextArea("0",40,40);
+        textArea = new JTextArea(900, 300);
+        text2 = new JTextArea("0", 40, 40);
         search = new JTextArea("Search");
         importfile = new JButton("Import");
         save = new JButton("Save");
@@ -42,16 +41,15 @@ public class SR extends JFrame {
 
         scroll = new JScrollPane(textArea);
         scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scroll.setSize(100,100);
+        scroll.setSize(100, 100);
         this.add(search);
-      //  this.add(text2);
+        //  this.add(text2);
         this.add(importfile);
         this.add(save);
         this.add(scroll);
         this.add(find);
         this.add(replace);
         this.add(replacebutton);
-
 
 
         importfile.setBounds(10, 50, 100, 40);
@@ -61,12 +59,11 @@ public class SR extends JFrame {
         scroll.setBounds(20, 150, 900, 300);
         replacebutton.setBounds(500, 50, 100, 40);
         replace.setBounds(600, 50, 150, 40);
-        text2.setBounds(10,100,20,20);
+        text2.setBounds(10, 100, 20, 20);
 
 
         this.setSize(1000, 600);
         this.setLayout(new BorderLayout());
-
 
 
         this.setVisible(true);
@@ -119,7 +116,6 @@ public class SR extends JFrame {
                 String txt3 = replace.getText();
 
 
-
                 if (txt.contains(txt2)) {
 
                     textArea.setText(txt.replaceAll("(?i)" + txt2, txt3));
@@ -127,14 +123,12 @@ public class SR extends JFrame {
                 }
 
 
-
             }
         });
         importfile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                String excelFilePath = "Workbook 26 - 50.xlsx";
+                String excelFilePath = "Workbook26-50.xlsx";
                 FileInputStream inputStream = null;
                 try {
                     inputStream = new FileInputStream(new File(excelFilePath));
@@ -238,7 +232,7 @@ public class SR extends JFrame {
         save.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                String excelFilePath = "Workbook 26 - 50.xlsx";
+                String excelFilePath = "Workbook26-50.xlsx";
                 FileInputStream inputStream = null;
                 try {
                     inputStream = new FileInputStream(new File(excelFilePath));
@@ -289,14 +283,14 @@ public class SR extends JFrame {
                     }
 
                 }
-                    try {
-                        workbook.write(new FileOutputStream("Workbook 26 - 50.xlsx"));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-
-
+                try {
+                    workbook.write(new FileOutputStream("Workbook26-50.xlsx"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
+
+
+            }
 
         });
     }
