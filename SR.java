@@ -183,66 +183,55 @@ public class SR extends JFrame {
         save.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                String excelFilePath = "Workbook26-50.xlsx";
-                FileInputStream inputStream = null;
                 try {
-                    inputStream = new FileInputStream(new File(excelFilePath));
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
+                    String excelFilePath = "Workbook26-50.xlsx";
+                    FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
 
-                Workbook workbook = null;
-                try {
-                    workbook = new XSSFWorkbook(inputStream);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                    Workbook workbook = new XSSFWorkbook(inputStream);
 
+                    int numberOfSheets = workbook.getNumberOfSheets();
 
-                for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-                    Sheet sheet = workbook.getSheetAt(i);
+                    for (int i = 0; i < numberOfSheets; i++) {
 
-                    Iterator<Row> iterator = sheet.iterator();
-                    Row row = sheet.getRow(0);
+                        Sheet sheet = workbook.getSheetAt(i);
 
-                    while (iterator.hasNext()) {
-                        Row nextRow = iterator.next();
+                        Iterator<Row> iterator = sheet.iterator();
+                        Row row = sheet.getRow(0);
 
-                        Iterator<Cell> cellIterator = nextRow.cellIterator();
-                        Iterator<Cell> scellIterator = nextRow.cellIterator();
+                        while (iterator.hasNext()) {
+                            Row nextRow = iterator.next();
 
-                        cellIterator.next();
-                        scellIterator.next();
-                        scellIterator.next();
-                        Cell topicsCell = cellIterator.next();
-                        Cell topicSentimentCell = scellIterator.next();
+                            Iterator<Cell> cellIterator = nextRow.cellIterator();
+                            Iterator<Cell> scellIterator = nextRow.cellIterator();
 
-                        String cellContents = topicsCell.getStringCellValue();
-                        String scellContents = topicSentimentCell.getStringCellValue();
+                            cellIterator.next();
+                            scellIterator.next();
+                            scellIterator.next();
+                            Cell topicsCell = cellIterator.next();
+                            Cell topicSentimentCell = scellIterator.next();
 
-                        String[] topics = cellContents.split(";");
-                        String[] topicSentiment = scellContents.split(";");
+                            String cellContents = topicsCell.getStringCellValue();
+                            String scellContents = topicSentimentCell.getStringCellValue();
+
+                            String[] topics = cellContents.split(";");
+                            String[] topicSentiment = scellContents.split(";");
 
 
-                        for (int in = 0; in < topics.length; in++) {
-                            Cell cell = row.getCell(in);
-                            if (cell != null) {
-                                cell.setCellValue(textArea.getText());
+                            for (int in = 0; in < topics.length; in++) {
+                                Cell cell = row.getCell(in);
+                                if (cell != null) {
+                                    cell.setCellValue(textArea.getText());
+                                }
                             }
+
                         }
 
                     }
-
-                }
-                try {
                     workbook.write(new FileOutputStream("Workbook26-50.xlsx"));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-
-
             }
-
         });
     }
 }
